@@ -1,0 +1,20 @@
+name: MCS-chunkhoppers
+version: '1.0'
+main: rimon.chunkhopper.MCSchunkhoppers
+api-version: '1.21'
+author: Rimon
+description: A hopper that collects items from an entire chunk.
+
+commands:
+  chunkhopper:
+    description: Gives a player a Chunk Hopper item.
+    aliases: [ch]
+    permission: chunkhopper.admin.give
+
+permissions:
+  chunkhopper.admin.give:
+    description: Allows usage of the /chunkhopper give command.
+    default: op
+  chunkhopper.place:
+    description: Allows placing Chunk Hoppers.
+    default: true

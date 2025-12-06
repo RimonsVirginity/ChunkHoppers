@@ -1,0 +1,26 @@
+# --- Chunk Hopper Configuration ---
+
+# List of materials that chunk hoppers will attempt to pick up.
+# Item IDs must match the official Minecraft IDs (e.g., "DIAMOND", "RAW_IRON", "WHEAT_SEEDS").
+# A comprehensive list can be found here: https://hub.spigotmc.org/javadocs/spigot/org/bukkit/Material.html
+pickup-filter:
+  - "DIAMOND"
+  - "EMERALD"
+  - "GOLD_INGOT"
+  - "IRON_INGOT"
+  - "NETHERITE_SCRAP"
+  - "ANCIENT_DEBRIS"
+  - "GUNPOWDER"
+  - "STRING"
+  - "BONE"
+  - "ROTTEN_FLESH"
+
+# --- Chunk Hopper Item Settings ---
+# Settings for the /chunkhopper give command. Color codes (&) are supported.
+hopper-item:
+  name: "&6&lChunk Hopper"
+  lore:
+    - "&ePlace this hopper to collect all"
+    - "&ewhitelisted items in this chunk."
+    - ""
+    - "&cID: CHUNK_COLLECTOR"
