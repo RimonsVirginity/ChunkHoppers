@@ -19,10 +19,9 @@ import java.util.stream.Collectors;
 
 public class GiveHopperCommand implements CommandExecutor {
 
-    private final JavaPlugin plugin;
-    public static final NamespacedKey CHUNK_HOPPER_KEY = new NamespacedKey("chunkhopper", "is_chunk_hopper");
+    private final MCSchunkhoppers plugin;
 
-    public GiveHopperCommand(JavaPlugin plugin) {
+    public GiveHopperCommand(MCSchunkhoppers plugin) {
         this.plugin = plugin;
     }
 
@@ -69,7 +68,7 @@ public class GiveHopperCommand implements CommandExecutor {
             }
         }
 
-        ItemStack chunkHopperItem = createChunkHopperItem(amount);
+        ItemStack chunkHopperItem = createChunkHopperItem(this.plugin, amount);
         target.getInventory().addItem(chunkHopperItem);
 
         sender.sendMessage(ChatColor.GREEN + "Gave " + amount + " Chunk Hopper(s) to " + target.getName() + ".");
@@ -77,11 +76,12 @@ public class GiveHopperCommand implements CommandExecutor {
         return true;
     }
 
-    private ItemStack createChunkHopperItem(int amount) {
+    public static ItemStack createChunkHopperItem(MCSchunkhoppers plugin, int amount) {
         ItemStack item = new ItemStack(Material.HOPPER, amount);
         ItemMeta meta = item.getItemMeta();
 
-        // Set display name and lore from config.yml
+        if (meta ==null) return item;
+
         String displayName = ChatColor.translateAlternateColorCodes('&', plugin.getConfig().getString("hopper-item.name", "&6&lChunk Hopper"));
         List<String> lore = plugin.getConfig().getStringList("hopper-item.lore").stream()
                 .map(line -> ChatColor.translateAlternateColorCodes('&', line))
@@ -90,9 +90,8 @@ public class GiveHopperCommand implements CommandExecutor {
         meta.setDisplayName(displayName);
         meta.setLore(lore);
 
-        // Add Persistent Data Container tag to identify this item securely
         PersistentDataContainer data = meta.getPersistentDataContainer();
-        data.set(CHUNK_HOPPER_KEY, PersistentDataType.BYTE, (byte) 1);
+        data.set(plugin.chunkHopperKey, PersistentDataType.BYTE, (byte) 1);
 
         item.setItemMeta(meta);
         return item;

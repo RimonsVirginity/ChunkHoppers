@@ -20,14 +20,12 @@ import java.util.concurrent.ConcurrentHashMap;
 public class HopperManager {
 
     private final MCSchunkhoppers plugin;
-    private final NamespacedKey chunkHopperKey;
     private final Map<Chunk, Location> activeHoppers = new ConcurrentHashMap<>();
     private Set<Material> pickupFilter = new HashSet<>();
     private boolean filterEnabled = false;
 
     public HopperManager(MCSchunkhoppers plugin) {
         this.plugin = plugin;
-        this.chunkHopperKey = new NamespacedKey(plugin, "is_chunk_hopper");
         loadConfigSettings();
     }
 
@@ -73,7 +71,7 @@ public class HopperManager {
         if (block.getState() instanceof TileState) {
             TileState tileState = (TileState) block.getState();
             PersistentDataContainer container = tileState.getPersistentDataContainer();
-            container.set(chunkHopperKey, PersistentDataType.BYTE, (byte) 1);
+            container.set(plugin.chunkHopperKey, PersistentDataType.BYTE, (byte) 1);
             tileState.update(); // Save the data to the block state
 
             activeHoppers.put(block.getChunk(), block.getLocation());
@@ -100,7 +98,7 @@ public class HopperManager {
         if (block.getType() == Material.HOPPER && block.getState() instanceof TileState) {
             TileState tileState = (TileState) block.getState();
             PersistentDataContainer container = tileState.getPersistentDataContainer();
-            return container.has(chunkHopperKey, PersistentDataType.BYTE);
+            return container.has(plugin.chunkHopperKey, PersistentDataType.BYTE);
         }
         return false;
     }

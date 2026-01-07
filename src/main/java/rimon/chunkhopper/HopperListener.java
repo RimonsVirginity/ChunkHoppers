@@ -1,6 +1,11 @@
 package rimon.chunkhopper;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.entity.Item;
+import org.bukkit.inventory.meta.ItemMeta;
+import rimon.chunkhopper.HopperManager;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -10,13 +15,16 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.world.ChunkUnloadEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.persistence.PersistentDataType;
 
 public class HopperListener implements Listener {
+    private final MCSchunkhoppers plugin;
 
     private final HopperManager hopperManager;
 
     public HopperListener(MCSchunkhoppers plugin, HopperManager hopperManager) {
         this.hopperManager = hopperManager;
+        this.plugin = plugin;
     }
 
     /**
@@ -28,10 +36,12 @@ public class HopperListener implements Listener {
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
         if (event.getBlockPlaced().getType() == Material.HOPPER) {
-            // Note: A check should be added here to prevent multiple chunk hoppers in one chunk.
-            // For simplicity, we assume one hopper per chunk. If another is placed, it overwrites the previous one in the map.
-            hopperManager.addChunkHopper(event.getBlockPlaced());
-            event.getPlayer().sendMessage("§aChunk Hopper created!");
+            ItemMeta meta = event.getItemInHand().getItemMeta();
+            if (meta != null && meta.getPersistentDataContainer().has(plugin.chunkHopperKey, PersistentDataType.BYTE)) {
+
+                hopperManager.addChunkHopper(event.getBlockPlaced());
+                event.getPlayer().sendMessage("§aChunk Hopper created!");
+            }
         }
     }
 
@@ -41,14 +51,20 @@ public class HopperListener implements Listener {
      */
     @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
-        if (event.getBlock().getType() == Material.HOPPER) {
-            // Check if it was a chunk hopper before removing it from tracking.
-            if (hopperManager.isChunkHopper(event.getBlock())) {
-                hopperManager.removeChunkHopper(event.getBlock().getLocation());
-                event.getPlayer().sendMessage("§cChunk Hopper removed.");
-            }
+        Block block = event.getBlock();
+        if (block.getType() != Material.HOPPER) return;
+        Bukkit.broadcastMessage("This is a hopper");
+        if (hopperManager.isChunkHopper(block)) {
+            Bukkit.broadcastMessage("This is a Chunk hopper");
+            event.setDropItems(false);
+            ItemStack item = GiveHopperCommand.createChunkHopperItem(plugin,1);
+            block.getWorld().dropItemNaturally(block.getLocation(), item);
+            Bukkit.broadcastMessage("should've given you chunk hopper");
+            hopperManager.removeChunkHopper(block.getLocation());
+            event.getPlayer().sendMessage("§cChunk Hopper removed.");
+
         }
-    }
+            }
 
     /**
      * Event: Item spawns in the world (from block breaks, mob deaths, etc.).

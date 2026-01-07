@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MCS-chunkhoppers.iml" filepath="$PROJECT_DIR$/MCS-chunkhoppers.iml" />
+      <module fileurl="file://$PROJECT_DIR$/chunkhoppers.iml" filepath="$PROJECT_DIR$/chunkhoppers.iml" />
     </modules>
   </component>
 </project>

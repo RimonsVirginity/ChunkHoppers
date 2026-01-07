@@ -1,8 +1,10 @@
 package rimon.chunkhopper;
 
+import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class MCSchunkhoppers extends JavaPlugin {
+    public final NamespacedKey chunkHopperKey = new NamespacedKey(this, "is_chunk_hopper");
 
     private HopperManager hopperManager;
 
@@ -11,6 +13,7 @@ public final class MCSchunkhoppers extends JavaPlugin {
         saveDefaultConfig();
 
         this.hopperManager = new HopperManager(this);
+
 
         getCommand("chunkhopper").setExecutor(new GiveHopperCommand(this));
 
